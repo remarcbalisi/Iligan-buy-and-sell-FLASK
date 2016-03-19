@@ -21,55 +21,51 @@ def spcall(qry, param, commit=False):
         res = [("Error: " + str(sys.exc_info()[0]) + " " + str(sys.exc_info()[1]),)]
     return res
 
-@auth.get_password
-def getpassword(username):
-    return spcall("getpassword", (username,))[0][0]
 
+#############################################AUTHENTICATION#########################################
+def check_auth(email, password):
+    #this function will check the username and password is valid.
 
-@app.route('/')
-def index():
-    return "Hello, World!"
+    user = spcall('checkauth',(email, password) )
+    print user
 
+    if 'Invalid Username or Password' in str(user[0][0]):
+        return jsonify( { 'status': 'error', 'message':user[0][0]} )
 
-@app.route('/tasks', methods=['GET'])
-@auth.login_required
-def getalltasks():
-    res = spcall('gettasks', ())
+    session['logged_in'] = True
+    return jsonify({"session": 'start'})
 
-    if 'Error' in str(res[0][0]):
-        return jsonify({'status': 'error', 'message': res[0][0]})
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        data = request.json
+        json_data = json.dumps(data)
+        print "json data "+json_data
+        return check_auth(json_data[0], json_data[1])
+        
+    return render_template('login.html')
 
-    recs = []
-    for r in res:
-        recs.append({"id": r[0], "title": r[1], "description": r[2], "done": str(r[3])})
-    return jsonify({'status': 'ok', 'entries': recs, 'count': len(recs)})
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return jsonify({'session':'destroy'})
 
+#create a wrapper: this wrapper is for athenticating users
+def ibs_login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if session.get('logged_in'):
+            if session['logged_in']:
+                pass
 
-@app.route('/tasks/<int:id>/<string:title>/<string:description>/<string:done>')
-@auth.login_required
-def inserttask(id, title, description, done):
+        else:
+            return login()
 
-    res = spcall("newtask", (id, title, description, done=='true'), True)
+        return f(*args, **kwargs)
 
-    if 'Error' in res[0][0]:
-        return jsonify({'status': 'error', 'message': res[0][0]})
+    return decorated
 
-    return jsonify({'status': 'ok', 'message': res[0][0]})
-
-
-@app.route('/task/delete', methods=['GET'])
-@auth.login_required
-def delete_task():
-    res = spcall('gettasks', ())
-
-    if 'Error' in str(res[0][0]):
-        return jsonify({'status': 'error', 'message': res[0][0]})
-
-    recs = []
-    for r in res:
-        recs.append({"id": r[0], "title": r[1], "description": r[2], "done": str(r[3])})
-    return jsonify({'status': 'ok', 'entries': recs, 'count': len(recs)})
-
+####################################################################################################
 
 @app.after_request
 def add_cors(resp):

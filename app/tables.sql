@@ -1,90 +1,55 @@
-create table tasks (
-   id int8 primary key,
-   title text,
-   description text,
-   done boolean
+create table users(
+  id serial8 primary key,
+  email text,
+  fname text,
+  mname text,
+  lname text,
+  contact_no text,
+  is_active boolean default TRUE,
+  role int default 2 --1: admin 2: normal  
+  username text,
+  password text
 );
 
-create or replace function newtask(par_id int8, par_title  text, par_description text, par_done boolean) returns text as
-$$
-  declare
-    loc_id text;
-    loc_res text;
-  begin
-     select into loc_id id from tasks where id = par_id;
-     if loc_id isnull then
-
-       insert into tasks (id, title, description, done) values (par_id, par_title, par_description, par_done);
-       loc_res = 'OK';
-
-     else
-       loc_res = 'ID EXISTED';  
-     end if;
-     return loc_res;
-  end;
-$$
- language 'plpgsql';
-
-create or replace function deletetask(par_id int8) returns text as
-$$
-  declare
-    loc_id text;
-    loc_res text;
-  begin
-     select into loc_id id from tasks where id = par_id;
-     if loc_id isnull then
-
-       loc_res = 'ERROR! NO DATA FOUND!';
-
-     else
-       loc_res = 'ID EXISTED';  
-     end if;
-     return loc_res;
-  end;
-$$
- language 'plpgsql';
-
---select newtask(1, 'Buy Groceries','Milk, Cheese, Pizza, Fruit, Tylenol', false); 
---select newtask(2, 'Learn Python','Need to find a good Python tutorial on the web', false); 
-
-create or replace function gettasks(out int8, out text, out text, out boolean) returns setof record as
-$$
-   select id, title, description, done from tasks;
-
-$$
- language 'sql';
- 
---select * from gettasks();
-
-create or replace function gettaskid(in par_id int8, out text, out text, out boolean) returns setof record as
-$$
-   select title, description, done from tasks where id = par_id;
-
-$$
- language 'sql';
- 
---select * from gettaskid(2);
-
-create table userpass (
-    username text primary key,
-    password text
+create table Type(
+  id serial8 primary key,
+  name text
 );
 
+create table Category(
+  id serial8 primary key,
+  name text
+);
 
-insert into userpass (username, password) values ('ako', 'akolagini');
+create table Item(
+  id serial8 primary key,
+  name text,
+  price int,
+  description text,
+  post_date timestamp default CURRENT_TIMESTAMP,
+  type_id int8 references Type(id),
+  category_id int8 references Category(id),
+  owner int8 references users(id)
+);
 
-create or replace function getpassword(par_username text) returns text as
-$$
-  declare
-    loc_password text;
-  begin
-     select into loc_password password from userpass where username = par_username;
-     if loc_password isnull then
-       loc_password = 'null';
-     end if;
-     return loc_password;
- end;
-$$
- language 'plpgsql';
+create table Image(
+  id serial8 primary key,
+  title text,
+  creation_date timestamp default CURRENT_TIMESTAMP,
+  stuff_image text,
+  item_id int8 references Item(id)
+);
 
-select getpassword('ako');
+create table Ranking(
+  id serial8 primary key,
+  item_rank timestamp default CURRENT_TIMESTAMP,
+  item_id int8 references Item(id)
+);
+
+create table Comment(
+  id serial8 primary key,
+  comment text,
+  post_comment_date timestamp default CURRENT_TIMESTAMP,
+  commmentator int8 references users(id),
+  item_id int8 references Item(id)
+);

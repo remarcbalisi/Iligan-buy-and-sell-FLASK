@@ -3,7 +3,7 @@ import os
 
 class DBconn:
     def __init__(self):
-        engine = create_engine("postgresql://flask:flasker@127.0.0.1:5432/flaskdb", echo=False)
+        engine = create_engine("postgresql://postgres:remarc@15@127.0.0.1:5432/ibs", echo=False)
         self.conn = engine.connect()
         self.trans = self.conn.begin()
 
