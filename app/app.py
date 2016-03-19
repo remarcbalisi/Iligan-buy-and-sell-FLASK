@@ -1,6 +1,8 @@
 #!flask/bin/python
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template, request, session, redirect
 from flask.ext.httpauth import HTTPBasicAuth
+from functools import wraps
+import json, flask
 from model import DBconn
 import flask
 import sys
@@ -35,7 +37,7 @@ def check_auth(email, password):
     session['logged_in'] = True
     return jsonify({"session": 'start'})
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/admin', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         data = request.json
@@ -43,7 +45,7 @@ def login():
         print "json data "+json_data
         return check_auth(json_data[0], json_data[1])
         
-    return render_template('login.html')
+    return render_template('admin/login.html')
 
 @app.route('/logout')
 def logout():
