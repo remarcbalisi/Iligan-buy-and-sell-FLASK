@@ -16,6 +16,13 @@ create or replace function newuser(par_email text, par_fname text, par_mname tex
   $$
   language 'plpgsql';
 
+create or replace function getuser(in par_email text, out int8, out text, out text, out text, out text, out text, out int) returns setof record as
+$$
+   select id, email, fname, mname, lname, contact_no, role from users where email = par_email;
+
+$$
+ language 'sql';
+
 create or replace function checkauth(par_email text, par_password text) returns text as
 $$
   declare
@@ -26,7 +33,7 @@ $$
     if loc_id isnull then
       loc_response = 'Invalid email/password';
     else
-      loc_response = 'Ok';
+      loc_response = "Ok";
     end if;
     return loc_response;
   end;

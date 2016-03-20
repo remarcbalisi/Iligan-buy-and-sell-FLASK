@@ -15,7 +15,7 @@
   <body id="login">
     <div class="container">
 
-      <form id="form" name="form" class="form-signin" method="POST">
+      <form class="form-signin" method="POST">
       <center>
         <h2 class="form-signin-heading">
           <img src="{{url_for('static', filename="admin/images/ibs 125x125.png")}}">
@@ -24,15 +24,12 @@
         <input id="email" name="email" type="text" class="input-block-level" placeholder="Email address" value="">
         <input id="password" name="password" type="password" class="input-block-level" placeholder="Password" value="">
         <div id="results"></div>
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
         <button class="btn btn-large btn-primary" type="submit" onclick="login();">Sign in</button>
       </form>
 
     </div> <!-- /container -->
-    <script src="{{url_for('static', filename="admin/bootstrap.min.js")}}"></script>
     <script src="{{url_for('static', filename="admin/jquery-2.1.4.min.js")}}"></script>
+    <script src="{{url_for('static', filename="admin/bootstrap.min.js")}}"></script>
     <script src="{{url_for('static', filename="admin/bootstrap/js/main.js")}}"></script>
   </body>
 </html>

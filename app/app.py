@@ -41,13 +41,18 @@ def check_auth(email, password):
 
 @app.route('/login', methods='POST')
 def login():
-    if request.method == 'POST':
-        json_data = request.get_json(force=True)
-        print json_data
-        if check_auth(str(json_data[0]), str(json_data[1])) is True:
-            return jsonify({"session":"start"})
-        else:
-            return jsonify({"session":"destroy"})
+    # I use try method because everytime i get tha json dta from the client
+    # side it always return a null but it prints the data in the terminal. Need to fix this
+    try:
+        if request.method == 'POST':
+            json_data = request.get_json(force=False)
+            print "GET JSON IS " + str(json_data['email'])
+            if check_auth(str(json_data['email']), str(json_data['password'])) is True:
+                return jsonify({"session":"start"})
+            else:
+                return jsonify({"session":"destroy"})
+    except:
+        return redirect('/admin')
         
     return render_template('admin/login.html')
 
@@ -72,10 +77,9 @@ def ibs_login_required(f):
 
 ####################################################################################################
 
-@app.route('/admin', methods=['POST', 'GET'])
-@ibs_login_required
+@app.route('/admin/<string:', methods=['POST', 'GET'])
 def admin():
-    return "welcome"
+    return render_template('admin/index.html')
 
 
 @app.after_request
@@ -97,4 +101,4 @@ def add_cors(resp):
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.run(debug=True)
+    app.run(debug=True, port=8000)

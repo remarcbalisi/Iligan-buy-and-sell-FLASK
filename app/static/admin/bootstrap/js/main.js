@@ -1,19 +1,20 @@
 function login(){
 	var email = $('#email').val();
 	var password = $('#password').val();
-	// console.log(email, password);
 	var user_info = {"email":email, "password":password};
-	console.log(user_info);
 
 	$.ajax({
-		url: "/admin",
+		url: "/login",
 		type: "POST",
 		contentType:"application/json",
-		dataType: "json",
 		data: JSON.stringify(user_info),
+		dataType: "json",
 		success: function(results){
-			if(results.session == 'start'){
-				$("#results").html('success!');
+			if(results.session == 'start' && results.usertype == '1'){
+				$.ajax({
+					url:"/admin",
+					type:"GET",
+				});
 			}				
 		},
 		error: function(error){
