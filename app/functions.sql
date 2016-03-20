@@ -15,3 +15,20 @@ create or replace function newuser(par_email text, par_fname text, par_mname tex
     end;
   $$
   language 'plpgsql';
+
+create or replace function checkauth(par_email text, par_password text) returns text as
+$$
+  declare
+  loc_response text;
+  loc_id int8;
+  begin
+    select into loc_id id from users where email = par_email and password = par_password;
+    if loc_id isnull then
+      loc_response = 'Invalid email/password';
+    else
+      loc_response = 'Ok';
+    end if;
+    return loc_response;
+  end;
+$$
+language 'plpgsql';

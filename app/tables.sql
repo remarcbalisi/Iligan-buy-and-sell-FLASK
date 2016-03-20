@@ -6,7 +6,7 @@ create table users(
   lname text,
   contact_no text,
   is_active boolean default TRUE,
-  role int default 2 --1: admin 2: normal  
+  role int default 2, --1: admin 2: normal  
   username text,
   password text
 );

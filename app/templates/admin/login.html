@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Admin Login</title>
+    <title>IBS|Admin Login</title>
     <!-- Bootstrap -->
-    <link href="{{url_for('static', filename="admin/bootstrap/css/bootstrap.min.css")}}" rel="stylesheet" media="screen">
+    <link href="{{url_for('static', filename="admin/bootstrap.min.css")}}" rel="stylesheet" media="screen">
     <link href="{{url_for('static', filename="admin/bootstrap/css/bootstrap-responsive.min.css")}}" rel="stylesheet" media="screen">
     <link href="{{url_for('static', filename="admin/assets/styles.css")}}" rel="stylesheet" media="screen">
      <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script src="{{url_for('static', filename="admin/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js")}}"></script>
-  </head>
+<!--     <script src="{{url_for('static', filename="admin/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js")}}"></script>
+ -->  </head>
   <body id="login">
     <div class="container">
 
-      <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input name="email" type="text" class="input-block-level" placeholder="Email address">
-        <input name="password" type="password" class="input-block-level" placeholder="Password">
+      <form id="form" name="form" class="form-signin" method="POST">
+      <center>
+        <h2 class="form-signin-heading">
+          <img src="{{url_for('static', filename="admin/images/ibs 125x125.png")}}">
+        </h2>
+      </center>
+        <input id="email" name="email" type="text" class="input-block-level" placeholder="Email address" value="">
+        <input id="password" name="password" type="password" class="input-block-level" placeholder="Password" value="">
+        <div id="results"></div>
         <label class="checkbox">
           <input type="checkbox" value="remember-me"> Remember me
         </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
+        <button class="btn btn-large btn-primary" type="submit" onclick="login();">Sign in</button>
       </form>
 
     </div> <!-- /container -->
-    <script src="{{url_for('static', filename="admin/vendors/jquery-1.9.1.min.js")}}"></script>
-    <script src="{{url_for('static', filename="admin/bootstrap/js/bootstrap.min.js")}}"></script>
+    <script src="{{url_for('static', filename="admin/bootstrap.min.js")}}"></script>
+    <script src="{{url_for('static', filename="admin/jquery-2.1.4.min.js")}}"></script>
+    <script src="{{url_for('static', filename="admin/bootstrap/js/main.js")}}"></script>
   </body>
 </html>

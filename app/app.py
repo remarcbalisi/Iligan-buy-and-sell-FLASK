@@ -1,4 +1,3 @@
-#!flask/bin/python
 from flask import Flask, jsonify, render_template, request, session, redirect
 from flask.ext.httpauth import HTTPBasicAuth
 from functools import wraps
@@ -32,18 +31,23 @@ def check_auth(email, password):
     print user
 
     if 'Invalid Username or Password' in str(user[0][0]):
-        return jsonify( { 'status': 'error', 'message':user[0][0]} )
+        return False
 
-    session['logged_in'] = True
-    return jsonify({"session": 'start'})
+    elif 'Ok' in str(user[0][0]):    
+        session['logged_in'] = True
+        return True
 
-@app.route('/admin', methods=['POST', 'GET'])
+    return False
+
+@app.route('/login', methods='POST')
 def login():
     if request.method == 'POST':
-        data = request.json
-        json_data = json.dumps(data)
-        print "json data "+json_data
-        return check_auth(json_data[0], json_data[1])
+        json_data = request.get_json(force=True)
+        print json_data
+        if check_auth(str(json_data[0]), str(json_data[1])) is True:
+            return jsonify({"session":"start"})
+        else:
+            return jsonify({"session":"destroy"})
         
     return render_template('admin/login.html')
 
@@ -62,12 +66,17 @@ def ibs_login_required(f):
 
         else:
             return login()
-
         return f(*args, **kwargs)
 
     return decorated
 
 ####################################################################################################
+
+@app.route('/admin', methods=['POST', 'GET'])
+@ibs_login_required
+def admin():
+    return "welcome"
+
 
 @app.after_request
 def add_cors(resp):
